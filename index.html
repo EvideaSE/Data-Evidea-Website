@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Födselfakta – layoutskiss och offert</title>
+<style>
+:root{
+  --paper:#EDEBE4; --paper2:#E5E2D9; --ink:#22201C; --ink2:#57534B;
+  --rule:#B6B1A3; --ph:#D8D4C9;
+  --blue:#2B3A67; --moss:#5C6B4A; --grey:#8A8375;
+  --postit:#F1D5DB; --postit-edge:#DBAEB8; --postit-ink:#59353E;
+  --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace;
+  --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--mono);font-size:13px;line-height:1.5;-webkit-font-smoothing:antialiased}
+
+.sketchbar{background:var(--ink);color:var(--paper);font-size:11px;letter-spacing:.09em;text-transform:uppercase;padding:7px 20px}
+.sketchbar-in{max-width:1180px;margin:0 auto;display:flex;gap:14px;align-items:center;justify-content:space-between}
+.notetoggle{appearance:none;background:transparent;border:1px solid rgba(237,235,228,.42);color:var(--paper);font-family:var(--mono);font-size:10px;letter-spacing:.09em;text-transform:uppercase;padding:3px 9px;cursor:pointer;white-space:nowrap}
+.notetoggle:hover{background:rgba(237,235,228,.14)}
+
+.masthead{border-bottom:1px solid var(--rule);padding:22px 20px 0}
+.masthead-in{max-width:1180px;margin:0 auto;display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap}
+.wordmark{font-size:19px;letter-spacing:-.01em;font-weight:700}
+.wordmark span{color:var(--ink2);font-weight:400}
+.tagline{color:var(--ink2);font-size:11.5px;margin-top:3px}
+.tabs{display:flex;gap:2px;margin-top:18px}
+.tab{appearance:none;border:1px solid var(--rule);border-bottom:none;background:var(--paper2);color:var(--ink2);font-family:var(--mono);font-size:11.5px;letter-spacing:.05em;padding:9px 15px;cursor:pointer;border-radius:3px 3px 0 0;position:relative;top:1px}
+.tab:hover{color:var(--ink)}
+.tab[aria-selected="true"]{background:var(--paper);color:var(--ink);font-weight:700;box-shadow:inset 0 2px 0 var(--blue)}
+.tab:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+
+
+main{max-width:1180px;margin:0 auto;padding:26px 20px 70px}
+.panel[hidden]{display:none}
+.eyebrow{font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--ink2);margin:0 0 9px}
+
+.postit{position:absolute;width:198px;z-index:6;background:var(--postit);border:1px solid var(--postit-edge);
+  color:var(--postit-ink);font-size:11.5px;line-height:1.45;padding:12px 24px 12px 13px;
+  box-shadow:2px 3px 0 rgba(89,53,62,.12),0 7px 16px rgba(34,32,28,.10);transform:rotate(-1.1deg)}
+.postit.tilt{transform:rotate(1deg)}
+.postit .x{position:absolute;top:5px;right:5px;width:16px;height:16px;padding:0;cursor:pointer;
+  border:1px solid var(--postit-edge);background:transparent;color:var(--postit-ink);
+  font-family:var(--mono);font-size:10px;line-height:1}
+.postit .x:hover{background:var(--postit-edge)}
+.postit[hidden]{display:none}
+
+.filterbar{border:1px solid var(--rule);border-bottom:none;background:var(--paper2);
+  padding:11px 13px;display:flex;gap:9px;align-items:center;flex-wrap:wrap}
+.fgroup{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.flabel{font-size:10px;letter-spacing:.11em;text-transform:uppercase;color:var(--ink2);margin-right:2px}
+.tt{appearance:none;cursor:pointer;font-family:var(--mono);font-size:11.5px;
+  display:inline-flex;align-items:center;gap:6px;padding:5px 11px 5px 8px;
+  background:transparent;border:1px solid var(--rule);color:var(--ink2);border-radius:20px}
+.tt i{width:11px;height:11px;border-radius:50%;border:1.5px solid var(--c);background:transparent;flex:none}
+.tt[aria-pressed="true"]{color:var(--ink);border-color:var(--ink2);background:var(--paper)}
+.tt[aria-pressed="true"] i{background:var(--c)}
+.tt:hover{color:var(--ink)}
+.fsep{width:1px;align-self:stretch;background:var(--rule);margin:0 3px}
+select.fsel{appearance:none;font-family:var(--mono);font-size:11.5px;color:var(--ink);
+  background-color:var(--paper);border:1px solid var(--rule);padding:6px 26px 6px 9px;cursor:pointer;
+  background-image:linear-gradient(45deg,transparent 50%,var(--ink2) 50%),linear-gradient(135deg,var(--ink2) 50%,transparent 50%);
+  background-position:calc(100% - 14px) 52%,calc(100% - 9px) 52%;background-size:5px 5px;background-repeat:no-repeat}
+.dd{position:relative}
+.dd-btn{appearance:none;font-family:var(--mono);font-size:11.5px;color:var(--ink);background:var(--paper);
+  border:1px solid var(--rule);padding:6px 9px;cursor:pointer}
+.dd-btn:hover{border-color:var(--ink2)}
+.dd-menu{position:absolute;top:calc(100% + 3px);left:0;z-index:20;background:var(--paper);
+  border:1px solid var(--ink2);padding:8px;min-width:178px;box-shadow:0 8px 18px rgba(34,32,28,.14)}
+.dd-menu[hidden]{display:none}
+.dd-menu label{display:flex;align-items:center;gap:8px;padding:4px 3px;cursor:pointer;font-size:12px}
+.dd-menu label:hover{color:var(--blue)}
+.dd-menu input{accent-color:var(--blue);margin:0}
+
+.graphwrap{display:grid;grid-template-columns:minmax(0,1fr) 256px;border:1px solid var(--rule);background:var(--paper2)}
+.stage{background:var(--paper);position:relative;min-width:0}
+#graph{display:block;width:100%;touch-action:none}
+.stagehint{position:absolute;top:10px;right:12px;font-size:10.5px;color:var(--ink2);
+  letter-spacing:.03em;pointer-events:none;text-align:right;
+  transition:opacity .45s ease;background:var(--paper);padding:3px 0 3px 8px;line-height:1.6}
+.stagehint.gone{opacity:0}
+.rail-r{border-left:1px solid var(--rule);padding:16px 15px;background:var(--paper2);min-width:0}
+.node{cursor:pointer}
+.inspect h3{font-size:13.5px;margin:0 0 3px;line-height:1.35}
+.meta{width:100%;border-collapse:collapse;margin-top:12px}
+.meta th,.meta td{text-align:left;vertical-align:top;padding:5px 0;border-bottom:1px solid var(--rule);font-weight:400;font-size:11.5px}
+.meta th{color:var(--ink2);width:84px;padding-right:8px}
+.pill{display:inline-block;font-size:10px;letter-spacing:.07em;text-transform:uppercase;padding:2px 6px;border:1px solid currentColor}
+.pill.peer{color:var(--moss)} .pill.nopeer{color:var(--ink2)}
+.empty{color:var(--ink2);font-size:12px;line-height:1.6}
+
+.pubgrid{display:grid;grid-template-columns:minmax(0,1fr) 274px;gap:34px;position:relative}
+.pubhead{border-bottom:2px solid var(--ink);padding-bottom:17px;margin-bottom:22px}
+.pubtitle{font-family:var(--serif);font-size:29px;line-height:1.22;margin:0 0 11px;font-weight:400}
+.metastrip{display:flex;gap:14px;flex-wrap:wrap;font-size:11px;color:var(--ink2)}
+.metastrip strong{color:var(--ink)}
+.prose{font-family:var(--serif);font-size:15.5px;line-height:1.62}
+.prose p{margin:0 0 15px}
+.blocklabel{font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--ink2);border-top:1px solid var(--rule);padding-top:9px;margin:29px 0 11px}
+.sidecard{border:1px solid var(--rule);padding:15px;background:var(--paper2);margin-bottom:19px}
+.sidecard h4{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink2);margin:0 0 10px;font-weight:400}
+.rel{list-style:none;margin:0;padding:0;font-size:12px}
+.rel li{padding:5px 0;border-bottom:1px solid var(--rule)}
+.rel li:last-child{border-bottom:none}
+.rel small{color:var(--ink2);display:block;font-size:10.5px}
+.srcbtn{display:block;text-align:center;border:1px solid var(--blue);color:var(--blue);padding:9px;text-decoration:none;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase}
+.srcbtn:hover{background:var(--blue);color:var(--paper)}
+.hl{background:rgba(92,107,74,.22);padding:1px 0;border-bottom:1px solid var(--moss)}
+.ph-box{border:1px dashed var(--rule);background:var(--ph);display:flex;align-items:center;justify-content:center;color:var(--ink2);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase}
+
+
+@media (max-width:900px){
+  .graphwrap{grid-template-columns:1fr}
+  .rail-r{border-left:none;border-top:1px solid var(--rule)}
+  .pubgrid{grid-template-columns:1fr}
+  .postit{position:static!important;width:auto;margin:0 0 15px;transform:none}
+  .postit.tilt{transform:none}
+  .stagehint{display:none}
+}
+@media (prefers-reduced-motion:reduce){*{transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+
+<div class="sketchbar">
+  <div class="sketchbar-in">
+    <span>Layoutskiss · struktur och innehåll, inte färdig formgivning · exempeldata</span>
+    <button class="notetoggle" id="notetoggle">Dölj anteckningar</button>
+  </div>
+</div>
+
+<header class="masthead">
+  <div class="masthead-in">
+    <div>
+      <div class="wordmark">födselfakta<span>.se</span></div>
+      <div class="tagline">Forskning om barnafödande, strukturerad och läsbar.</div>
+      <div class="tabs" role="tablist">
+        <button class="tab" role="tab" aria-selected="true"  data-panel="p-graph">Kunskapsgraf</button>
+        <button class="tab" role="tab" aria-selected="false" data-panel="p-pub">Publikationssida</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<section class="panel" id="p-graph" role="tabpanel">
+  <p class="eyebrow">Vy 1 · data.födselfakta.se</p>
+
+  <div class="filterbar">
+    <div class="fgroup">
+      <span class="flabel">Visa</span>
+      <button class="tt" data-typ="studie"   aria-pressed="true" style="--c:#2B3A67"><i></i>Studier</button>
+      <button class="tt" data-typ="material" aria-pressed="true" style="--c:#22201C"><i></i>Övrigt material</button>
+      <button class="tt" data-typ="amne"     aria-pressed="true" style="--c:#5C6B4A"><i></i>Ämnen</button>
+      <button class="tt" data-typ="region"   aria-pressed="true" style="--c:#8A8375"><i></i>Regioner</button>
+    </div>
+    <span class="fsep"></span>
+    <div class="fgroup">
+      <select class="fsel" id="f-peer" aria-label="Referentgranskning">
+        <option value="alla">Allt material</option>
+        <option value="peer">Endast referentgranskat</option>
+      </select>
+      <div class="dd" id="dd-reg">
+        <button class="dd-btn" aria-expanded="false">Region: <b>alla</b></button>
+        <div class="dd-menu" hidden>
+          <label><input type="checkbox" class="f-reg" value="Sverige" checked> Sverige</label>
+          <label><input type="checkbox" class="f-reg" value="Norden" checked> Norden</label>
+          <label><input type="checkbox" class="f-reg" value="Storbritannien" checked> Storbritannien</label>
+          <label><input type="checkbox" class="f-reg" value="Nederländerna" checked> Nederländerna</label>
+        </div>
+      </div>
+      <select class="fsel" id="f-size" aria-label="Urvalsstorlek">
+        <option value="alla">Alla urvalsstorlekar</option>
+        <option value="stor">Urval minst 5 000</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="graphwrap">
+    <div class="stage" id="stage">
+      <svg id="graph" aria-label="Kunskapsgraf över exempelkällor"></svg>
+      <div class="stagehint" id="stagehint">Nodstorlek = omfattning<br>Ring = referentgranskad</div>
+      <div class="postit" id="pi1" style="top:22px;left:18px">
+        <button class="x" aria-label="Ta bort anteckning">&#10005;</button>
+        Varje källa är en nod. Ämnen och regioner är också noder, så en studie kopplas automatiskt
+        ihop med allt annat som rör samma sak.
+      </div>
+    </div>
+    <aside class="rail-r">
+      <div class="inspect" id="inspect">
+        <p class="eyebrow">Vald nod</p>
+        <p class="empty">Ingen nod vald ännu. Klicka på en nod i grafen.</p>
+      </div>
+      <div class="postit tilt" id="pi2" style="position:relative;top:18px;left:0;width:auto">
+        <button class="x" aria-label="Ta bort anteckning">&#10005;</button>
+        Filtren ovanför grafen är exakt samma metadatafält som visas här. Vi fyller i dem
+        en gång, per källa.
+      </div>
+    </aside>
+  </div>
+</section>
+
+<section class="panel" id="p-pub" role="tabpanel" hidden>
+  <p class="eyebrow">Vy 2 · födselfakta.se</p>
+
+  <div class="pubgrid">
+    <article style="position:relative">
+      <div class="pubhead">
+        <p class="eyebrow">Hemförlossning · Kohortstudie</p>
+        <h1 class="pubtitle">Planerad hemförlossning och maternella utfall</h1>
+        <div class="metastrip">
+          <span><strong>2019</strong></span><span>Norden</span><span>n = 16 400</span>
+          <span class="pill peer">Peer reviewed</span>
+        </div>
+      </div>
+
+      <p class="blocklabel" style="border-top:none;padding-top:0;margin-top:0">Vår sammanfattning</p>
+      <div class="prose">
+        <p>Studien följde planerade hemförlossningar hos kvinnor med förväntat normalt förlopp
+        och jämförde utfallen med planerade sjukhusförlossningar under samma period.
+        <span class="hl">Läsaren kan markera ett stycke och spara det till sin egen samling.</span></p>
+        <p>Materialet är stort nog för att säga något om ovanliga händelser, men urvalet består
+        av kvinnor som redan bedömts ha låg risk. Det går alltså inte att läsa resultatet som att
+        hemförlossning skulle vara lika säkert för alla — bara för den grupp som studerats.</p>
+        <p>Sammanfattningen är skriven av oss och granskad innan publicering. Den ersätter inte
+        originalartikeln.</p>
+      </div>
+
+      <div class="postit" id="pi3" style="top:210px;right:-52px">
+        <button class="x" aria-label="Ta bort anteckning">&#10005;</button>
+        Markeringsverktyget ingår inte i piloten. Det ligger i etapp 2 — men layouten är
+        förberedd för det.
+      </div>
+
+      <p class="blocklabel">Så här bör siffrorna läsas</p>
+      <div class="prose">
+        <p>Registerstudier av det här slaget visar samband, inte orsak. Den som vill använda
+        materialet i debatt bör läsa metodavsnittet i originalet först.</p>
+      </div>
+
+      <p class="blocklabel">Grafutsnitt · den här källans kopplingar</p>
+      <svg viewBox="0 0 560 195" style="width:100%;height:auto;border:1px dashed var(--rule);background:var(--paper2)">
+        <line x1="280" y1="97" x2="108" y2="46"  stroke="#B6B1A3"/>
+        <line x1="280" y1="97" x2="108" y2="150" stroke="#B6B1A3"/>
+        <line x1="280" y1="97" x2="450" y2="44"  stroke="#B6B1A3"/>
+        <line x1="280" y1="97" x2="450" y2="100" stroke="#B6B1A3"/>
+        <line x1="280" y1="97" x2="450" y2="154" stroke="#B6B1A3"/>
+        <circle cx="280" cy="97" r="14" fill="#2B3A67" stroke="#5C6B4A" stroke-width="3"/>
+        <text x="280" y="132" text-anchor="middle" font-family="ui-monospace,monospace" font-size="11.5" font-weight="600" fill="#33302A">Denna studie</text>
+        <circle cx="108" cy="46" r="9" fill="#5C6B4A"/>
+        <text x="108" y="29" text-anchor="middle" font-family="ui-monospace,monospace" font-size="11" font-weight="600" fill="#3E3A33">Hemförlossning</text>
+        <circle cx="108" cy="150" r="9" fill="#8A8375"/>
+        <text x="108" y="174" text-anchor="middle" font-family="ui-monospace,monospace" font-size="11" font-weight="600" fill="#3E3A33">Norden</text>
+        <circle cx="450" cy="44" r="8" fill="#2B3A67"/>
+        <text x="450" y="27" text-anchor="middle" font-family="ui-monospace,monospace" font-size="11" font-weight="600" fill="#3E3A33">Överflyttning</text>
+        <circle cx="450" cy="100" r="8" fill="#2B3A67"/>
+        <text x="450" y="83" text-anchor="middle" font-family="ui-monospace,monospace" font-size="11" font-weight="600" fill="#3E3A33">Kostnadsjämförelse</text>
+        <circle cx="450" cy="154" r="8" fill="#5C6B4A"/>
+        <text x="450" y="178" text-anchor="middle" font-family="ui-monospace,monospace" font-size="11" font-weight="600" fill="#3E3A33">Valfrihet</text>
+      </svg>
+    </article>
+
+    <aside style="position:relative">
+      <div class="sidecard">
+        <h4>Metadata</h4>
+        <table class="meta">
+          <tr><th>Ämne</th><td>Hemförlossning</td></tr>
+          <tr><th>Kategori</th><td>Kohortstudie</td></tr>
+          <tr><th>Peer review</th><td><span class="pill peer">Ja</span></td></tr>
+          <tr><th>Urval</th><td>16 400</td></tr>
+          <tr><th>Omfattning</th><td>Stor</td></tr>
+          <tr><th>Region</th><td>Norden</td></tr>
+          <tr><th>År</th><td>2019</td></tr>
+          <tr><th>DOI</th><td>10.xxxx/xxxxx</td></tr>
+          <tr><th>Licens</th><td>Öppen tillgång</td></tr>
+        </table>
+      </div>
+      <div class="postit tilt" id="pi4" style="position:relative;width:auto;margin-bottom:19px">
+        <button class="x" aria-label="Ta bort anteckning">&#10005;</button>
+        Originalet länkas alltid. Vi publicerar sammanfattning och metadata — inte artikeln
+        i fulltext.
+      </div>
+      <div class="sidecard">
+        <h4>Relaterat</h4>
+        <ul class="rel">
+          <li>Överflyttning under pågående hemförlossning<small>Nederländerna · 2021</small></li>
+          <li>Kostnadsjämförelse hem och klinik<small>Norden · 2018</small></li>
+          <li>Födandes upplevelse av valfrihet<small>Sverige · 2023</small></li>
+        </ul>
+      </div>
+      <a class="srcbtn" href="#" onclick="return false">Läs originalet</a>
+      <div class="ph-box" style="height:96px;margin-top:19px">Plats för bild eller diagram</div>
+    </aside>
+  </div>
+</section>
+
+</main>
+
+<script>
+(function(){
+'use strict';
+
+var tabs = [].slice.call(document.querySelectorAll('[data-panel]'));
+tabs.forEach(function(t){
+  t.addEventListener('click', function(){
+    tabs.forEach(function(o){
+      var on = (o === t);
+      o.setAttribute('aria-selected', String(on));
+      document.getElementById(o.dataset.panel).hidden = !on;
+    });
+    window.scrollTo(0,0);
+  });
+});
+
+var pis = [].slice.call(document.querySelectorAll('.postit'));
+var tgl = document.getElementById('notetoggle');
+function sync(){
+  tgl.textContent = pis.some(function(p){ return !p.hidden; })
+    ? 'Dölj anteckningar' : 'Visa anteckningar';
+}
+pis.forEach(function(p){
+  p.querySelector('.x').addEventListener('click', function(){ p.hidden = true; sync(); });
+});
+tgl.addEventListener('click', function(){
+  var any = pis.some(function(p){ return !p.hidden; });
+  pis.forEach(function(p){ p.hidden = any; });
+  sync();
+});
+
+var N = [
+ {id:'s1',t:'studie',l:'Planerad hemförlossning',kat:'Kohortstudie',peer:1,n:16400,reg:'Norden',ar:2019,omf:'Stor'},
+ {id:'s2',t:'studie',l:'Överflyttning',kat:'Registerstudie',peer:1,n:3120,reg:'Nederländerna',ar:2021,omf:'Medel'},
+ {id:'s3',t:'studie',l:'Barnmorskekontinuitet',kat:'Systematisk översikt',peer:1,n:24000,reg:'Storbritannien',ar:2016,omf:'Stor'},
+ {id:'s4',t:'studie',l:'Förlossningsskador',kat:'Registerstudie',peer:1,n:9800,reg:'Sverige',ar:2022,omf:'Stor'},
+ {id:'s5',t:'studie',l:'Bristningar III–IV',kat:'Rapport',peer:0,n:1450,reg:'Sverige',ar:2020,omf:'Liten'},
+ {id:'s6',t:'studie',l:'Upplevd valfrihet',kat:'Intervjustudie',peer:1,n:42,reg:'Sverige',ar:2023,omf:'Liten'},
+ {id:'s7',t:'studie',l:'Barnmorsketillgång',kat:'Kartläggning',peer:0,n:null,reg:'Sverige',ar:2024,omf:'Medel'},
+ {id:'s8',t:'studie',l:'Kostnadsjämförelse',kat:'Hälsoekonomi',peer:1,n:7600,reg:'Norden',ar:2018,omf:'Stor'},
+ {id:'s9',t:'studie',l:'Förlossningsdatum',kat:'Kohortstudie',peer:1,n:5200,reg:'Storbritannien',ar:2017,omf:'Stor'},
+ {id:'m1',t:'material',l:'RFSU: Graviditet',kat:'Informationsmaterial',peer:0,n:null,reg:'Sverige',ar:2023,omf:'Liten'},
+ {id:'m2',t:'material',l:'RFSU: Förlossningsdatum',kat:'Informationsmaterial',peer:0,n:null,reg:'Sverige',ar:2022,omf:'Liten'},
+ {id:'a1',t:'amne',l:'Hemförlossning'},{id:'a2',t:'amne',l:'Barnmorskekontinuitet'},
+ {id:'a3',t:'amne',l:'Förlossningsskador'},{id:'a4',t:'amne',l:'Valfrihet'},
+ {id:'a5',t:'amne',l:'Regionala skillnader'},{id:'a6',t:'amne',l:'Ekonomi'},{id:'a7',t:'amne',l:'Graviditet'},
+ {id:'r1',t:'region',l:'Sverige'},{id:'r2',t:'region',l:'Norden'},
+ {id:'r3',t:'region',l:'Storbritannien'},{id:'r4',t:'region',l:'Nederländerna'}
+];
+var E = [['s1','a1'],['s1','r2'],['s2','a1'],['s2','r4'],['s3','a2'],['s3','r3'],
+ ['s4','a3'],['s4','r1'],['s5','a3'],['s5','r1'],['s6','a4'],['s6','r1'],
+ ['s7','a5'],['s7','a2'],['s7','r1'],['s8','a6'],['s8','a1'],['s8','r2'],
+ ['s9','a7'],['s9','r3'],['m1','a7'],['m1','r1'],['m2','a7'],['m2','r1'],
+ ['s1','s2'],['s1','s8'],['s4','s5'],['s3','s7'],['s6','a1']];
+
+var COL={studie:'#2B3A67',amne:'#5C6B4A',region:'#8A8375',material:'#22201C'};
+var RAD={Stor:13,Medel:10,Liten:8};
+var byId={};
+N.forEach(function(d,i){
+  byId[d.id]=d;
+  d.r=(d.t==='studie'||d.t==='material')?(RAD[d.omf]||9):(d.t==='amne'?10:9);
+  d.x=350+Math.cos(i/N.length*6.283)*150;
+  d.y=250+Math.sin(i/N.length*6.283)*115;
+  d.vx=0; d.vy=0; d.appear=0; d.delay=i*26; d.hidden_=false;
+});
+E.forEach(function(e){ e.a=byId[e[0]]; e.b=byId[e[1]]; });
+
+var svg=document.getElementById('graph'), stage=document.getElementById('stage');
+var NS='http://www.w3.org/2000/svg', W=700, H=520;
+var gE=document.createElementNS(NS,'g'), gN=document.createElementNS(NS,'g');
+svg.appendChild(gE); svg.appendChild(gN);
+
+E.forEach(function(e){
+  var l=document.createElementNS(NS,'line');
+  l.setAttribute('stroke','#B6B1A3'); l.setAttribute('stroke-width','1');
+  gE.appendChild(l); e.el=l;
+});
+N.forEach(function(d){
+  var g=document.createElementNS(NS,'g'); g.setAttribute('class','node');
+  var c=document.createElementNS(NS,'circle');
+  c.setAttribute('r',d.r); c.setAttribute('fill',COL[d.t]);
+  if(d.peer){ c.setAttribute('stroke','#5C6B4A'); c.setAttribute('stroke-width','3'); }
+  var tx=document.createElementNS(NS,'text');
+  tx.setAttribute('font-family','ui-monospace,SFMono-Regular,Menlo,monospace');
+  tx.setAttribute('font-size',(d.t==='amne'||d.t==='region')?'12':'11.5');
+  tx.setAttribute('font-weight','600');
+  tx.setAttribute('text-anchor','middle');
+  tx.setAttribute('fill',(d.t==='amne'||d.t==='region')?'#33302A':'#3E3A33');
+  tx.textContent=d.l;
+  g.appendChild(c); g.appendChild(tx); gN.appendChild(g);
+  d.g=g; d.tx=tx;
+});
+
+var alpha=1, dragging=null, running=false, t0=null, entering=true;
+
+function layout(){
+  var w=Math.max(300, stage.clientWidth||700);
+  W=w; H = w<640 ? 640 : Math.max(440, Math.min(560, Math.round(w*0.7)));
+  svg.setAttribute('viewBox','0 0 '+W+' '+H);
+  svg.style.height=H+'px';
+  clampAll();
+  alpha=Math.max(alpha,.35); run();
+}
+function clampAll(){
+  N.forEach(function(d){
+    d.x=Math.max(d.r+70,Math.min(W-d.r-70,d.x));
+    d.y=Math.max(d.r+24,Math.min(H-d.r-26,d.y));
+  });
+}
+function tick(){
+  var i,j;
+  for(i=0;i<N.length;i++) for(j=i+1;j<N.length;j++){
+    var a=N[i],b=N[j],dx=b.x-a.x,dy=b.y-a.y,d2=dx*dx+dy*dy||.01,d=Math.sqrt(d2);
+    var f=3800/d2; if(d<70) f+=(70-d)*.48;
+    var fx=dx/d*f, fy=dy/d*f;
+    a.vx-=fx; a.vy-=fy; b.vx+=fx; b.vy+=fy;
+  }
+  E.forEach(function(e){
+    var dx=e.b.x-e.a.x, dy=e.b.y-e.a.y, d=Math.sqrt(dx*dx+dy*dy)||.01;
+    var f=(d-116)*.028, fx=dx/d*f, fy=dy/d*f;
+    e.a.vx+=fx; e.a.vy+=fy; e.b.vx-=fx; e.b.vy-=fy;
+  });
+  N.forEach(function(d){
+    d.vx+=(W/2-d.x)*.006; d.vy+=(H/2-d.y)*.006;
+    if(d===dragging){ d.vx=0; d.vy=0; return; }
+    d.vx*=.82; d.vy*=.82; d.x+=d.vx*alpha; d.y+=d.vy*alpha;
+  });
+  clampAll();
+}
+function ease(p){ return p<0?0:p>1?1:1-Math.pow(1-p,3); }
+function draw(now){
+  now = now||0;
+  if(entering){
+    if(t0===null) t0=now;
+    var done=true;
+    N.forEach(function(d){
+      d.appear=ease(((now-t0)-d.delay)/460);
+      if(d.appear<1) done=false;
+    });
+    gE.style.opacity=Math.max(0,Math.min(1,((now-t0)-180)/640));
+    if(done) entering=false;
+  }
+  E.forEach(function(e){
+    e.el.setAttribute('x1',e.a.x.toFixed(1)); e.el.setAttribute('y1',e.a.y.toFixed(1));
+    e.el.setAttribute('x2',e.b.x.toFixed(1)); e.el.setAttribute('y2',e.b.y.toFixed(1));
+  });
+  N.forEach(function(d){
+    var s=d.appear;
+    d.g.setAttribute('transform','translate('+d.x.toFixed(1)+','+d.y.toFixed(1)+') scale('+s.toFixed(3)+')');
+    d.g.style.opacity = d.hidden_ ? (s*0.12) : s;
+    d.tx.setAttribute('y', d.r+16);
+  });
+}
+function run(){
+  if(running) return; running=true;
+  requestAnimationFrame(function loop(now){
+    tick(); draw(now); alpha*=.995;
+    if(entering||dragging||alpha>.05) requestAnimationFrame(loop);
+    else running=false;
+  });
+}
+
+var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+if(reduce){
+  entering=false; N.forEach(function(d){ d.appear=1; }); gE.style.opacity=1;
+  for(var k=0;k<500;k++) tick(); draw(0);
+} else {
+  for(var k2=0;k2<220;k2++) tick();
+}
+
+var hint=document.getElementById('stagehint'), hintGone=false;
+function touched(){ if(!hintGone){ hintGone=true; hint.classList.add('gone'); } }
+
+function pt(ev){
+  var r=svg.getBoundingClientRect(), s=(r.width/W)||1;
+  return {x:(ev.clientX-r.left)/s, y:(ev.clientY-r.top)/s};
+}
+N.forEach(function(d){
+  d.g.addEventListener('pointerdown', function(ev){
+    touched(); dragging=d; alpha=Math.max(alpha,.5);
+    try{ d.g.setPointerCapture(ev.pointerId); }catch(err){}
+    run(); ev.preventDefault();
+  });
+  d.g.addEventListener('pointermove', function(ev){
+    if(dragging!==d) return;
+    var p=pt(ev); d.x=p.x; d.y=p.y;
+  });
+  d.g.addEventListener('pointerup', function(){ dragging=null; alpha=Math.max(alpha,.2); run(); });
+  d.g.addEventListener('pointercancel', function(){ dragging=null; });
+  d.g.addEventListener('mouseenter', function(){ touched(); focusN(d); });
+  d.g.addEventListener('mouseleave', blurN);
+  d.g.addEventListener('click', function(){ touched(); select(d); });
+});
+function focusN(d){
+  if(d.hidden_||entering) return;
+  var near={}; near[d.id]=1;
+  E.forEach(function(e){ if(e.a===d) near[e.b.id]=1; if(e.b===d) near[e.a.id]=1; });
+  N.forEach(function(o){ o.g.style.opacity = near[o.id] ? 1 : .18; });
+  E.forEach(function(e){
+    var on=(e.a===d||e.b===d);
+    e.el.setAttribute('stroke', on?'#2B3A67':'#B6B1A3');
+    e.el.setAttribute('stroke-width', on?'2':'1');
+    e.el.style.opacity = on?1:.22;
+  });
+}
+function blurN(){
+  N.forEach(function(o){ o.g.style.opacity = o.hidden_?.12:1; });
+  E.forEach(function(e){
+    e.el.setAttribute('stroke','#B6B1A3'); e.el.setAttribute('stroke-width','1');
+    e.el.style.opacity = (e.a.hidden_||e.b.hidden_)?.08:1;
+  });
+}
+
+var ins=document.getElementById('inspect');
+function row(k,v){ return '<tr><th>'+k+'</th><td>'+v+'</td></tr>'; }
+function select(d){
+  var h='<p class="eyebrow">Vald nod</p><h3>'+d.l+'</h3>';
+  if(d.t==='amne'||d.t==='region'){
+    var c=E.filter(function(e){ return e.a===d||e.b===d; }).length;
+    h+='<p class="empty" style="margin-top:8px">'+(d.t==='amne'?'Ämnesnod':'Regionnod')+
+       ' med '+c+' kopplade källor.</p>';
+  } else {
+    h+='<table class="meta">'+row('Kategori',d.kat)+
+      row('Peer review', d.peer?'<span class="pill peer">Ja</span>':'<span class="pill nopeer">Nej</span>')+
+      row('Urval', d.n?d.n.toLocaleString('sv-SE'):'—')+row('Omfattning',d.omf)+
+      row('Region',d.reg)+row('År',d.ar)+row('DOI','10.xxxx/xxxxx')+'</table>';
+  }
+  ins.innerHTML=h;
+}
+
+var ddReg=document.getElementById('dd-reg');
+var ddBtn=ddReg.querySelector('.dd-btn'), ddMenu=ddReg.querySelector('.dd-menu');
+ddBtn.addEventListener('click', function(e){
+  e.stopPropagation();
+  var open=ddMenu.hidden;
+  ddMenu.hidden=!open; ddBtn.setAttribute('aria-expanded',String(open));
+});
+document.addEventListener('click', function(e){
+  if(!ddReg.contains(e.target)){ ddMenu.hidden=true; ddBtn.setAttribute('aria-expanded','false'); }
+});
+
+[].slice.call(document.querySelectorAll('.tt')).forEach(function(b){
+  b.addEventListener('click', function(){
+    b.setAttribute('aria-pressed', b.getAttribute('aria-pressed')==='true'?'false':'true');
+    apply();
+  });
+});
+document.getElementById('f-peer').addEventListener('change', apply);
+document.getElementById('f-size').addEventListener('change', apply);
+[].slice.call(document.querySelectorAll('.f-reg')).forEach(function(i){ i.addEventListener('change', apply); });
+
+function apply(){
+  touched();
+  var peer=document.getElementById('f-peer').value;
+  var size=document.getElementById('f-size').value;
+  var regs=[].slice.call(document.querySelectorAll('.f-reg:checked')).map(function(i){ return i.value; });
+  var typs=[].slice.call(document.querySelectorAll('.tt[aria-pressed="true"]')).map(function(b){ return b.dataset.typ; });
+  var all=document.querySelectorAll('.f-reg').length;
+  ddBtn.innerHTML='Region: <b>'+(regs.length===all?'alla':(regs.length===0?'inga':regs.length+' valda'))+'</b>';
+  ddBtn.setAttribute('aria-expanded', String(!ddMenu.hidden));
+
+  N.forEach(function(d){
+    var ok = typs.indexOf(d.t)!==-1;
+    if(ok && (d.t==='studie'||d.t==='material')){
+      if(peer==='peer' && !d.peer) ok=false;
+      if(ok && regs.indexOf(d.reg)===-1) ok=false;
+      if(ok && size==='stor' && !(d.n && d.n>=5000)) ok=false;
+    }
+    if(ok && d.t==='region' && regs.indexOf(d.l)===-1) ok=false;
+    d.hidden_=!ok;
+    d.g.style.pointerEvents = ok?'auto':'none';
+  });
+  blurN();
+  alpha=Math.max(alpha,.28); run();
+}
+
+layout(); sync();
+if(!reduce) run();
+var rt; window.addEventListener('resize', function(){ clearTimeout(rt); rt=setTimeout(layout,140); });
+
+})();
+</script>
+</body>
+</html>
